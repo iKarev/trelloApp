@@ -9,7 +9,7 @@ npm i
 then
 
 ```
-meteor create --example angular2-boilerplate
+meteor
 ```
 
 ## Contents
