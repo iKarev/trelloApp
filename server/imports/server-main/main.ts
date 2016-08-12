@@ -1,5 +1,5 @@
-import { DemoCollection } from '../../../both/collections/demo-collection';
-import { DemoDataObject } from '../../../both/models/demo-data-object';
+import { UsersCollection } from '../../../both/collections/users-collection';
+import { UsersDataObject } from '../../../both/models/users-data-object';
 
 export class Main {
   constructor() {
@@ -10,18 +10,18 @@ export class Main {
   }
 
   initFakeData():void {
-    if (DemoCollection.find({}).count() === 0) {
-      DemoCollection.insert(<DemoDataObject>{
+    if (UsersCollection.find({}).count() === 0) {
+      UsersCollection.insert(<UsersDataObject>{
         name: 'Dotan',
         age: 25
       });
 
-      DemoCollection.insert(<DemoDataObject>{
+      UsersCollection.insert(<UsersDataObject>{
         name: 'Liran',
         age: 26
       });
 
-      DemoCollection.insert(<DemoDataObject>{
+      UsersCollection.insert(<UsersDataObject>{
         name: 'Uri',
         age: 30
       });

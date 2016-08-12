@@ -1,0 +1,69 @@
+<p class='trello__instruction flex-50 m-8 p-8'>
+    <span *ngIf='linkToTrello == 0'>Если вы хотите взаимодействовать с сервисом Trello, вам нужно дать разрешение на работу приложения с вашим аккаунтом.Для этого нажмите кнопку "Получить ключ", после чего вставьте её в появившееся поле.</span>
+    <span *ngIf='linkToTrello == 1'>Если у вас есть ключ для аутентификации вашего аккаунта, вставьте его в это поле и начните работать с вашим аккуантом Trello.</span>
+    <span *ngIf='linkToTrello == 2'>Отлично! Можете начать работу.</span>
+    <span *ngIf='linkToTrello < 0'>Ох-ох! Что-то пошло не так. Проверьте ваш ключ аутентификации или попробуйте позже.</span>
+</p>
+<menu class='ph-8 layout-row layout-align-start-start'>
+    <div *ngIf='linkToTrello < 2' class='layout-row flex-50 layout-align-start-start'>
+        <button *ngIf='linkToTrello < 2' type='button' class='btn btn-info' (click)='onAuthorizeTrello()'>{{linkToTrello > 0 ? 'Попробовать еще раз' : 'Получить ключ'}}</button>
+        <input *ngIf='linkToTrello == 1 || linkToTrello < 0' class='form-control' [(ngModel)]='trelloUserToken' placeholder='Вставьте ключ в это поле' />
+        <button *ngIf='linkToTrello == 1 || linkToTrello < 0' type='button' class='btn btn-primary' (click)='onAuthorizeTrello(trelloUserToken)'>Подключить Trello!</button>
+    </div>
+    <!--<div *ngIf='linkToTrello == 2' class='layout-row flex-50 layout-align-start-start'>
+        <button (click)='onGetCardsInfo()'>Загрузить карточки</button>
+    </div>-->
+</menu>
+<div class='layout-row layout-align-start-start'>
+    <div *ngFor='let board of boards' class='p-8'>
+        <button><h3 class='noselect' (click)='activeBoard = board'>{{board.name}}</h3></button>
+    </div>
+</div>
+<section ng-if='activeBoard' class='noselect layout-row layout-align-space-around-start'>
+    <div class='layout-column flex-33 ph-8' *ngFor='let list of activeBoard.lists'>
+        <div class='trello__column ph-8' [ngClass]="{'landing-column':landingColumn == list}">
+            <h3>{{list.name}}</h3>
+            <div class='trello__card mv-8' *ngFor='let card of list.cards'>
+                <div class='trello__card-wrapper relative'
+                     [ngClass]="{'wrapper-dragging': card.dragging || card.empty}"
+                     (mouseover)='onDragMove(card, list, $event)'
+                     (mousedown)='onDragStart(card, list, $event)'
+                     (click)='oShowCard(card)'>
+                    <div class='trello__card-outer p-8'
+                        [ngStyle]='{"left":card.visualX+"px","top":card.visualY+"px"}'
+                        [ngClass]="{'outer-dragging': card.dragging}" >
+                        <p>{{card.name}}</p>
+                    </div>
+                </div>
+            </div>
+            <div *ngIf='list.cards && list.cards.length == 0' 
+                class='trello__card-empty mv-8'
+                (mouseover)='onDragMove(0, list, $event)'>
+                Move tasks here
+            </div>
+            <button (click)='onStartCreateNewCard(list)' class='mb-16'>Создать карточку</button>
+        </div>
+    </div>
+</section>
+<div class='trello__modal-bg' *ngIf='creatingNewCard || showCard' (click)='onCloseModal()'></div>
+<div class='trello__modal-wrapper p-16' *ngIf='creatingNewCard || showCard'>
+    <h4 *ngIf='creatingNewCard'>Создание карточки</h4>
+    <div *ngIf='creatingNewCard' class='layout-row'>
+        <label class='flex-30'>Название</label>
+        <div class='flex-70 mb-8'>
+            <input [(ngModel)]='newCard.name' class='w-100'>
+        </div>
+    </div>
+    <h4 *ngIf='showCard'>{{newCard.name}}</h4>
+    <div *ngIf='creatingNewCard' class='layout-row'>
+        <label class='flex-30'>Описание</label>
+        <div class='flex-70'>
+            <textarea [(ngModel)]='newCard.desc' class='w-100'>
+        </div>
+    </div>
+    <p *ngIf='showCard' class='mt-16'>{{newCard.desc}}</p>
+    <div class='layout-row layout-align-space-between-start'>
+        <button type='button' *ngIf='creatingNewCard' (click)='onCreateNewCard()'>Создать</button>
+        <button type='button' (click)='onCloseModal()'>Закрыть</button>
+    </div>
+</div>
