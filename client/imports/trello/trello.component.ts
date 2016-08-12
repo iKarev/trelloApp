@@ -31,11 +31,6 @@ export class TrelloComponent {
     this.renderer = renderer;
   }
 
-  /*onLinkToTrello () {
-    this.linkToTrello = 1;
-    window.open('https://trello.com/1/authorize?key=dbfa380ffc1168fd2149056a5808ee7e&scope=read%2Cwrite&name=My+Application&expiration=never&response_type=token')
-  }*/
-
   onAuthorizeTrello (token?: string) {
     
     let authenticationSuccess = () => { 
@@ -108,7 +103,8 @@ export class TrelloComponent {
           }
         }
       }
-      this.linkToTrello = 2;
+      this.linkToTrello = 1;
+      setTimeout( ()=> this.linkToTrello = 2, 5000)
     })
 
     window.Trello.get(`/members/me/boards/`, getListSuccess);
@@ -155,7 +151,7 @@ export class TrelloComponent {
   onDragStart (card: card, list: list, e: event) {
     console.log('keydown');
     this.isItClick = true;
-    setTimeout(()=>{this.isItClick = false;},300)
+    setTimeout( ()=> this.isItClick = false, 300)
     this.draggingTask = card;
     card.dragging = true;
     card.posX = e.clientX;
